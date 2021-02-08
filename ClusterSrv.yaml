@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clustersrv
+  labels:
+    app: clustersrv
+spec:
+  ports:
+    - nodePort: 30000
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: clustersrv
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: clustersrv
+  name: clustersrv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clustersrv
+  template:
+    metadata:
+      labels:
+        app: clustersrv
+      name: clustersrv
+    spec:
+      containers:
+      - name: testpod
+        image: waftring/kubexample:server
