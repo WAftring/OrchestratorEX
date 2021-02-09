@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  web:
+    image: waftring/overlayexample:srv
+    ports:
+      - "9000:8080"
+  api:
+    image: waftring/overlayexample:api
+    ports:
+      - "9001:8080"

@@ -40,7 +40,10 @@ func main() {
 	h2 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /api")
 		s := API("bing.com")
-		s += API("api.local")
+		// NOTE: We use swarm_api_1 as it is the default DNS name
+		// 	for API using the following structure 
+		//	<project>_<container>_<instance> - wiaftrin
+		s += API("swarm_api_1")
 		RenderPage(w, s)
 	}
 
