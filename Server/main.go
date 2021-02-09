@@ -9,6 +9,9 @@ import (
 	"net/http"
 )
 
+// TODO: 
+// 		Add JS for cleaner rendering of the API request
+//		Add some CSS so this doesn't look awful - wiaftrin
 var page = `
 <html>
 <body>

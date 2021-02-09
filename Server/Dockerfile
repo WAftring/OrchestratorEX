@@ -1,7 +1,7 @@
 FROM golang:1.16-rc-windowsservercore-1809
 LABEL maintainer="william.aftring@microsoft.com"
-ADD . /go/src/gosrv
-WORKDIR /go/src/gosrv
-RUN go get -v gosrv
+ADD . /go/src/srv
+WORKDIR /go/src/srv
+RUN go get -v srv
 RUN go install -v 
-ENTRYPOINT [ "Server.exe" ]
+ENTRYPOINT [ "Srv.exe" ]

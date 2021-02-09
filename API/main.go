@@ -21,7 +21,7 @@ func main() {
 
 	log.Println("Server starting")
 	h1 := func(w http.ResponseWriter, _ *http.Request) {
-		log.Println("Request for /rand")
+		log.Println("Request for /")
 		s := RandomString(12)
 		log.Println("Returning: ", s)
 		io.WriteString(w, s)
