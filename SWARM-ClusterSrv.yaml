@@ -1,10 +1,20 @@
-version: "3.9"
+version: "3.8"
 services:
   web:
     image: waftring/overlayexample:srv
     ports:
-      - "9000:8080"
+      - target: 80
+        published: 9001
+        protocol: tcp
+    deploy:
+      endpoint_mode: vip
+
   api:
     image: waftring/overlayexample:api
     ports:
-      - "9001:8080"
+      - target: 80
+        published: 9000
+        protocol: tcp
+    deploy:
+      endpoint_mode: vip
+   

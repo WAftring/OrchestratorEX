@@ -28,7 +28,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", h1)
-	log.Println("Listening on 0.0.0.0:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Listening on 0.0.0.0:80")
+	log.Fatal(http.ListenAndServe(":80", nil))
 
 }

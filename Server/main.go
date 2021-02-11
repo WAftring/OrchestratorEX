@@ -49,8 +49,8 @@ func main() {
 
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/api", h2)
-	log.Println("Listening on 0.0.0.0:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Listening on 0.0.0.0:80")
+	log.Fatal(http.ListenAndServe(":80", nil))
 
 }
 func RenderPage(w http.ResponseWriter, content string) {
