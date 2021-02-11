@@ -118,7 +118,7 @@ func TCPAPI(endpoint string) (res string) {
 }
 
 func HTTPAPI(URL string) (response string) {
-	body := fmt.Sprintf("HTTP Request to %s\n", URL)
+	body := fmt.Sprintf("\nHTTP Request to %s\n", URL)
 	resp, err := http.Get(URL)
 	if err != nil {
 		log.Println("ERR: ", URL, err)
