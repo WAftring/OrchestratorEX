@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 )
 
-// TODO: 
+// TODO:
 // 		Add JS for cleaner rendering of the API request
 //		Add some CSS so this doesn't look awful - wiaftrin
 var page = `
@@ -39,11 +40,12 @@ func main() {
 	}
 	h2 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /api")
-		s := API("bing.com")
+		s := TCPAPI("bing.com")
 		// NOTE: We use swarm_api_1 as it is the default DNS name
-		// 	for API using the following structure 
+		// 	for API using the following structure
 		//	<project>_<container>_<instance> - wiaftrin
-		s += API("orchestratorex_api")
+		s += TCPAPI("orchestratorex_api")
+		s += HTTPAPI("http://orchestratorex_api")
 		RenderPage(w, s)
 	}
 
@@ -53,6 +55,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":80", nil))
 
 }
+
 func RenderPage(w http.ResponseWriter, content string) {
 
 	data := &Data{Content: content}
@@ -70,12 +73,12 @@ func RenderPage(w http.ResponseWriter, content string) {
 
 }
 
-func API(endpoint string) (res string) {
+func TCPAPI(endpoint string) (res string) {
 	var logstr string
 	log.Println("Looking up ", endpoint)
 	resp, err := net.LookupHost(endpoint)
 	if err != nil {
-		logstr = fmt.Sprintf("\nDNS Lookup for %s: FAILED\n\tERR: %s", endpoint, err)
+		logstr = fmt.Sprintf("\nDNS Lookup for %s: FAILED\n\tERR: %s\n\n", endpoint, err)
 		return logstr
 	} else {
 		dns_string := ""
@@ -98,7 +101,7 @@ func API(endpoint string) (res string) {
 	socket, err := net.Dial("tcp4", dialstr)
 	defer socket.Close()
 	if err != nil {
-		logstr = fmt.Sprintf("Dial %s:80: FAILED \n\tERR: %s", endpoint, err)
+		logstr = fmt.Sprintf("Dial %s:80: FAILED \n\tERR: %s\n", endpoint, err)
 	} else {
 		logstr = fmt.Sprintf("Dial %s:80: SUCCESS\n\tLocal Addr:\t%s\n\tRemote Addr:\t%s\n",
 			endpoint,
@@ -112,4 +115,19 @@ func API(endpoint string) (res string) {
 		logstr)
 	return body
 
+}
+
+func HTTPAPI(URL string) (response string) {
+	body := fmt.Sprintf("HTTP Request to %s\n", URL)
+	resp, err := http.Get(URL)
+	if err != nil {
+		log.Println("ERR: ", URL, err)
+		return fmt.Sprintf("%s\tERR: HTTP request to %s failed", body, URL)
+	}
+	content, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERR: ", err)
+		return fmt.Sprintf("%s\tERR: Unable to read HTTP response", body)
+	}
+	return fmt.Sprintf("%s\torchestratorex_api response:\t%s", body, content)
 }
