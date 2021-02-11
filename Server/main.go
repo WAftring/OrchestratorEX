@@ -43,7 +43,7 @@ func main() {
 		// NOTE: We use swarm_api_1 as it is the default DNS name
 		// 	for API using the following structure 
 		//	<project>_<container>_<instance> - wiaftrin
-		s += API("orchestratorex_api_1")
+		s += API("orchestratorex_api")
 		RenderPage(w, s)
 	}
 
