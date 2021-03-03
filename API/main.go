@@ -28,7 +28,7 @@ func main() {
 	}
 	h2 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /big-payload")
-		s := RandomString(1500)
+		s := RandomString(9000)
 		log.Println("Returning rand string 1500")
 		io.WriteString(w, s)
 	}

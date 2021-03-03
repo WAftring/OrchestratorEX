@@ -53,10 +53,6 @@ func main() {
 		log.Println("Request for /big-payload")
 		s := "5x requests for big payload complete"
 		HTTPAPI("http://orchestratorex_api/big-payload")
-		HTTPAPI("http://orchestratorex_api/big-payload")
-		HTTPAPI("http://orchestratorex_api/big-payload")
-		HTTPAPI("http://orchestratorex_api/big-payload")
-		HTTPAPI("http://orchestratorex_api/big-payload")
 		RenderPage(w, s)
 	}
 
