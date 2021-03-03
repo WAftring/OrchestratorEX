@@ -51,7 +51,12 @@ func main() {
 	}
 	h3 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /big-payload")
-		s := HTTPAPI("http://orchestratorex_api/big-payload")
+		s := "5x requests for big payload complete"
+		HTTPAPI("http://orchestratorex_api/big-payload")
+		HTTPAPI("http://orchestratorex_api/big-payload")
+		HTTPAPI("http://orchestratorex_api/big-payload")
+		HTTPAPI("http://orchestratorex_api/big-payload")
+		HTTPAPI("http://orchestratorex_api/big-payload")
 		RenderPage(w, s)
 	}
 
