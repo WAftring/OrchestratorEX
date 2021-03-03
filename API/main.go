@@ -26,8 +26,15 @@ func main() {
 		log.Println("Returning: ", s)
 		io.WriteString(w, s)
 	}
+	h2 := func(w http.ResponseWriter, _ *http.Request) {
+		log.Println("Request for /big-payload")
+		s := RandomString(1500)
+		log.Println("Returning rand string 1500")
+		io.WriteString(w, s)
+	}
 
 	http.HandleFunc("/", h1)
+	http.HandleFunc("/big-payload", h2)
 	log.Println("Listening on 0.0.0.0:80")
 	log.Fatal(http.ListenAndServe(":80", nil))
 

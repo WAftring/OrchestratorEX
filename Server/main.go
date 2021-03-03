@@ -19,6 +19,7 @@ var page = `
 	<ul>
 		<li><a href='/'>Home</a></li>
 		<li><a href='/api'>API</a></li>
+		<li><a href='/big-payload'>Big Payload</a></li>
 	</ul>
 	<pre>
 	{{.Content}}
@@ -48,9 +49,15 @@ func main() {
 		s += HTTPAPI("http://orchestratorex_api")
 		RenderPage(w, s)
 	}
+	h3 := func(w http.ResponseWriter, _ *http.Request) {
+		log.Println("Request for /big-payload")
+		s := HTTPAPI("http://orchestratorex_api/big-payload")
+		RenderPage(w, s)
+	}
 
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/api", h2)
+	http.HandleFunc("/big-payload", h3)
 	log.Println("Listening on 0.0.0.0:80")
 	log.Fatal(http.ListenAndServe(":80", nil))
 
