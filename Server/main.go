@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"log"
@@ -10,34 +9,18 @@ import (
 	"net/http"
 )
 
-// TODO:
-// 		Add JS for cleaner rendering of the API request
-//		Add some CSS so this doesn't look awful - wiaftrin
-var page = `
-<html>
-<body>
-	<ul>
-		<li><a href='/'>Home</a></li>
-		<li><a href='/api'>API</a></li>
-		<li><a href='/big-payload'>Big Payload</a></li>
-	</ul>
-	<pre>
-	{{.Content}}
-	</pre>
-</body>
-</html>`
-
-type Data struct {
-	Content string
-}
-
 func main() {
 
+	page, err := ioutil.ReadFile("index.html")
+	if err != nil {
+		log.Println("Could not read index.html")
+		log.Fatal(err)
+	}
+
 	log.Println("Server starting")
-	var content = "Home Page"
 	h1 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /")
-		RenderPage(w, content)
+		io.WriteString(w, string(page))
 	}
 	h2 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /api")
@@ -47,13 +30,12 @@ func main() {
 		//	<project>_<container>_<instance> - wiaftrin
 		s += TCPAPI("orchestratorex_api")
 		s += HTTPAPI("http://orchestratorex_api")
-		RenderPage(w, s)
+		io.WriteString(w, s)
 	}
 	h3 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /big-payload")
-		s := "5x requests for big payload complete"
-		HTTPAPI("http://orchestratorex_api/big-payload")
-		RenderPage(w, s)
+		s := HTTPAPI("http://orchestratorex_api/big-payload")
+		io.WriteString(w, s)
 	}
 
 	http.HandleFunc("/", h1)
@@ -61,23 +43,6 @@ func main() {
 	http.HandleFunc("/big-payload", h3)
 	log.Println("Listening on 0.0.0.0:80")
 	log.Fatal(http.ListenAndServe(":80", nil))
-
-}
-
-func RenderPage(w http.ResponseWriter, content string) {
-
-	data := &Data{Content: content}
-	tmpl := template.New("page")
-	tmpl, err := tmpl.Parse(page)
-	if err != nil {
-		log.Println("Failed to parse template with ", err)
-		io.WriteString(w, "Failed to parse template")
-	}
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		log.Println("Failed to execute template with ", err)
-		io.WriteString(w, "Failed to execute template")
-	}
 
 }
 
