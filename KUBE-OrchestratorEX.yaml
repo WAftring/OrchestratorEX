@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orchestratorex-web
+  labels:
+    app: orchestratorex-web
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30001
+  selector:
+    app: orchestratorex-web
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: orchestratorex-web
+  name: orchestratorex-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orchestratorex-web
+  template:
+    metadata:
+      labels:
+        app: orchestratorex-web
+      name: orchestratorex-web
+    spec:
+      containers:
+      - name: orchestratorex-web
+        image: waftring/overlayexample:srv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orchestratorex-api
+  labels:
+    app: orchestratorex-api
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30002
+  selector:
+    app: orchestratorex-api
+  externalName: orchestratorex_api
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: orchestratorex-api
+  name: orchestratorex-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orchestratorex-api
+  template:
+    metadata:
+      labels:
+        app: orchestratorex-api
+      name: orchestratorex-api
+    spec:
+      containers:
+      - name: orchestratorex-api
+        image: waftring/overlayexample:api
