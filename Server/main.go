@@ -7,10 +7,11 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 )
 
 func main() {
-
+	apiname := os.Getenv("API_NAME")
 	page, err := ioutil.ReadFile("index.html")
 	if err != nil {
 		log.Println("Could not read index.html")
@@ -18,6 +19,7 @@ func main() {
 	}
 
 	log.Println("Server starting")
+	log.Println("API Name:", apiname)
 	h1 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /")
 		io.WriteString(w, string(page))
@@ -28,19 +30,25 @@ func main() {
 		// NOTE: We use swarm_api_1 as it is the default DNS name
 		// 	for API using the following structure
 		//	<project>_<container>_<instance> - wiaftrin
-		s += TCPAPI("orchestratorex_api")
-		s += HTTPAPI("http://orchestratorex_api")
+		s += TCPAPI(apiname)
+		s += HTTPAPI(fmt.Sprintf("http://%s", apiname))
 		io.WriteString(w, s)
 	}
 	h3 := func(w http.ResponseWriter, _ *http.Request) {
 		log.Println("Request for /big-payload")
-		s := HTTPAPI("http://orchestratorex_api/big-payload")
+		s := HTTPAPI(fmt.Sprintf("http://%s/big-payload", apiname))
+		io.WriteString(w, s)
+	}
+	h4 := func(w http.ResponseWriter, r *http.Request) {
+		log.Println("API request for", r.URL)
+		s := HTTPAPI(fmt.Sprintf("http://%s/%s", apiname, r.URL))
 		io.WriteString(w, s)
 	}
 
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/api", h2)
 	http.HandleFunc("/big-payload", h3)
+	http.HandleFunc("/payload-length/", h4)
 	log.Println("Listening on 0.0.0.0:80")
 	log.Fatal(http.ListenAndServe(":80", nil))
 
@@ -48,7 +56,7 @@ func main() {
 
 func TCPAPI(endpoint string) (res string) {
 	var logstr string
-	log.Println("Looking up ", endpoint)
+	log.Println("Looking up", endpoint)
 	resp, err := net.LookupHost(endpoint)
 	if err != nil {
 		logstr = fmt.Sprintf("\nDNS Lookup for %s: FAILED\n\tERR: %s\n\n", endpoint, err)
@@ -69,7 +77,7 @@ func TCPAPI(endpoint string) (res string) {
 	// NOTE: We have some weird rendering in the html
 	// This extra linebreak fixes it - wiaftrin
 	body := fmt.Sprintf("\n%s", logstr)
-	log.Println("Testing TCP Connectivity to ", endpoint)
+	log.Println("Testing TCP Connectivity to", endpoint)
 	var dialstr = fmt.Sprintf("%s:80", endpoint)
 	socket, err := net.Dial("tcp4", dialstr)
 	defer socket.Close()
@@ -102,5 +110,5 @@ func HTTPAPI(URL string) (response string) {
 		log.Println("ERR: ", err)
 		return fmt.Sprintf("%s\tERR: Unable to read HTTP response", body)
 	}
-	return fmt.Sprintf("%s\torchestratorex_api response:\t%s", body, content)
+	return fmt.Sprintf("%s\tAPI response:\t%s", body, content)
 }

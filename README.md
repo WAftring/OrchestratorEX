@@ -14,4 +14,7 @@ docker stack deploy --compose-file docker-compose.yml orchestratorex
 
 **Kubernetes:**
 
-WIP
+```
+wget https://raw.githubusercontent.com/WAftring/OrchestratorEX/master/KUBE-OrchestratorEX.yaml
+kubectl apply -f KUBE-OrchestratorEX.yaml
+```
