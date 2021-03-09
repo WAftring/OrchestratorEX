@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: orchestratorex-web
-        image: waftring/overlayexample:srv
+        image: waftring/overlayexample:srv-k8s
 ---
 apiVersion: v1
 kind: Service
@@ -49,7 +49,6 @@ spec:
       nodePort: 30002
   selector:
     app: orchestratorex-api
-  externalName: orchestratorex_api
   type: NodePort
 ---
 apiVersion: apps/v1

@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   web:
-    image: waftring/overlayexample:srv
+    image: waftring/overlayexample:srv-swarm
     ports:
       - target: 80
         published: 9001
