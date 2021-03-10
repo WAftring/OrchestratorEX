@@ -1,5 +1,5 @@
 FROM golang:1.16-rc-windowsservercore-1809
-LABEL maintainer="william.aftring@microsoft.com"
+LABEL maintainer="william.aftring@outlook.com"
 ADD . /go/src/api
 WORKDIR /go/src/api
 RUN go get -v api
